@@ -1,0 +1,36 @@
+
+name: NxNative Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: macos-26
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check macOS and Xcode
+        run: |
+          set -euxo pipefail
+          sw_vers
+          xcodebuild -version
+          uname -m
+          df -h /
+
+      - name: Install Metal tools
+        run: |
+          set -euxo pipefail
+          xcodebuild -downloadComponent MetalToolchain
+          df -h /
+
+      - name: Check Python
+        run: |
+          python3 --version
+          python3 -m pip --version
